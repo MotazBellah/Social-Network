@@ -27,13 +27,16 @@ def load_user(userid):
 def before_request():
     """Connect to the database before each request. """
     g.db = models.DATABASE
-    g.db.connect()
+    if g.db.is_closed():
+        g.db.connect()
+    # g.db = models.DATABASE.connect()
 
 
 @app.after_request
 def after_request(response):
     """Close to the database after each request. """
-    g.db.close()
+    if not g.db.is_closed():
+        g.db.close()
     return response
 
 
@@ -57,11 +60,14 @@ def index():
 
 if __name__ == '__main__':
     models.initiatize()
-    models.User.create_user(
-        name="MoatazBellah",
-        email="moatazbellahhamdy@gmail.com",
-        password='0185809035',
-        admin=True,
-        bio='I am google software engineer'
-    )
+    try:
+        models.User.create_user(
+            username="MoatazBellah",
+            email="moatazbellahhamdy@gmail.com",
+            password='0185809035',
+            admin=True,
+            bio='I am google software engineer'
+        )
+    except ValueError:
+        pass
     app.run(debug=DEBUG, host=HOST, port=PORT)

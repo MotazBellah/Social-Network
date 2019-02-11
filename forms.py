@@ -10,7 +10,7 @@ def name_exists(form, field):
         raise ValidationError('User already exists.')
 
 # Function to check if the email already in exists
-email_exists(form, field):
+def email_exists(form, field):
     if User.select().where(User.email == field.data).exists():
         raise ValidationError('User already exists.')
 
