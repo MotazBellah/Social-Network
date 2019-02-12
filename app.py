@@ -1,10 +1,10 @@
-from flask import (Flask, g, render_template, flash, redirect, url_for)
+from flask import Flask, g, render_template, flash, redirect, url_for
 from flask.ext.login import LoginManager
 import forms
 import models
 
 DEBUG = True
-PORT = 8000
+PORT = 5000
 HOST = '0.0.0.0'
 
 app = Flask(__name__)
@@ -27,20 +27,18 @@ def load_user(userid):
 def before_request():
     """Connect to the database before each request. """
     g.db = models.DATABASE
-    if g.db.is_closed():
-        g.db.connect()
+    g.db.connect(reuse_if_open=True)
     # g.db = models.DATABASE.connect()
 
 
 @app.after_request
 def after_request(response):
     """Close to the database after each request. """
-    if not g.db.is_closed():
-        g.db.close()
+    g.db.close()
     return response
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=('GET', 'POST'))
 def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
@@ -63,10 +61,10 @@ if __name__ == '__main__':
     try:
         models.User.create_user(
             username="MoatazBellah",
-            email="moatazbellahhamdy@gmail.com",
-            password='0185809035',
+            email="moatazbellah@gmail.com",
+            password='123456',
             admin=True,
-            bio='I am google software engineer'
+            bio='I am software engineer'
         )
     except ValueError:
         pass
