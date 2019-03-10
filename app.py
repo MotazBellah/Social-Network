@@ -91,8 +91,8 @@ if __name__ == '__main__':
             username="MoatazBellah",
             email="moatazbellah@gmail.com",
             password='123456',
-            admin=True,
-            bio='I am software engineer'
+            admin=True
+            # bio='I am software engineer'
         )
     except ValueError:
         pass
