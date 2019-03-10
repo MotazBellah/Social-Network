@@ -23,6 +23,14 @@ class User(UserMixin, Model):
         # You can use list, order_by = ['-joined_at']
         order_by = ('-joined_at',)
 
+
+    def get_post(self):
+        return Post.select().where(Post.user==self)
+
+
+    def get_stream(self):
+        return Post.select().where((Post.user==self))
+
     # classmethod is a method that belongs to a class that can create the class it belongs to
     # the way it works, if we don't have classmethod we have to create a user instance to call create user which will create a user instance
     # classmethod is agreat solution to building classes from nothing
@@ -38,6 +46,17 @@ class User(UserMixin, Model):
         except IntegrityError:
             raise ValueError("User already exists")
 
+class Post(Model):
+    timestamp = DateTimeField(default=datetime.datetime.now)
+    user = ForeignKeyField(
+        rel_model=User,
+        related_name='posts'
+    )
+    content = TextField()
+
+    class Meta:
+        database = DATABASE
+        order_by = ('-timestamp',)
 
 def initiatize():
     DATABASE.connect()
