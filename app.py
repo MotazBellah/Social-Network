@@ -95,7 +95,8 @@ def post():
 
 @app.route('/')
 def index():
-    return 'Hey'
+    stream = models.Post.select().limit(100)
+    return render_template('stream.html', stream=stream)
 
 if __name__ == '__main__':
     models.initiatize()
