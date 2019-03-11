@@ -98,6 +98,22 @@ def index():
     stream = models.Post.select().limit(100)
     return render_template('stream.html', stream=stream)
 
+
+@app.route('/stream')
+@app.route('/stream/<username>')
+def stream(username=None):
+    template = 'stream.html'
+    if username and username != current_user.username:
+        user = models.User.select().where(models.User.username**username).get() ## ** like comparison without care about case
+        stream = user.post.limit(100)
+    else:
+        stream = current_user.get_stream().limit(100)
+        user = current_user
+    if username:
+        template = 'user_stream.html'
+    return render_template(template, stream=stream, user=user)
+
+
 if __name__ == '__main__':
     models.initiatize()
     try:
